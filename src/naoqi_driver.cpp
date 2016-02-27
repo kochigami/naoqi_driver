@@ -62,7 +62,7 @@
 #include "subscribers/teleop.hpp"
 #include "subscribers/moveto.hpp"
 #include "subscribers/speech.hpp"
-
+#include "subscribers/animated_speech.hpp"
 
 /*
  * SERVICES
@@ -579,6 +579,7 @@ void Driver::registerDefaultConverter()
 
   bool bumper_enabled                 = boot_config_.get( "converters.bumper.enabled", true);
   bool tactile_enabled                = boot_config_.get( "converters.tactile.enabled", true);
+  bool hand_enabled                = boot_config_.get( "converters.hand.enabled", true);
   /*
    * The info converter will be called once after it was added to the priority queue. Once it is its turn to be called, its
    * callAll method will be triggered (because InfoPublisher is considered to always have subscribers, isSubscribed always
@@ -802,6 +803,26 @@ void Driver::registerDefaultConverter()
     }
   }
 
+  if ( hand_enabled )
+  {
+    std::vector<std::string> hand_touch_events;
+    hand_touch_events.push_back("HandRightBackTouched");
+    hand_touch_events.push_back("HandRightLeftTouched");
+    hand_touch_events.push_back("HandRightRightTouched");
+    hand_touch_events.push_back("HandLeftBackTouched");
+    hand_touch_events.push_back("HandLeftLeftTouched");
+    hand_touch_events.push_back("HandLeftRightTouched");
+    boost::shared_ptr<HandTouchEventRegister> event_register =
+      boost::make_shared<HandTouchEventRegister>( "hand_touch", hand_touch_events, 0, sessionPtr_ );
+    insertEventConverter("hand_touch", event_register);
+    if (keep_looping) {
+      event_map_.find("hand_touch")->second.startProcess();
+    }
+    if (publish_enabled_) {
+      event_map_.find("hand_touch")->second.isPublishing(true);
+    }
+  }
+
 }
 
 // public interface here
@@ -833,6 +854,7 @@ void Driver::registerDefaultSubscriber()
   registerSubscriber( boost::make_shared<naoqi::subscriber::TeleopSubscriber>("teleop", "/cmd_vel", "/joint_angles", sessionPtr_) );
   registerSubscriber( boost::make_shared<naoqi::subscriber::MovetoSubscriber>("moveto", "/move_base_simple/goal", sessionPtr_, tf2_buffer_) );
   registerSubscriber( boost::make_shared<naoqi::subscriber::SpeechSubscriber>("speech", "/speech", sessionPtr_) );
+  registerSubscriber( boost::make_shared<naoqi::subscriber::AnimatedSpeechSubscriber>("animated_speech", "/animated_speech", sessionPtr_) );
 }
 
 void Driver::registerService( service::Service srv )
