@@ -27,6 +27,10 @@
 
 #include <naoqi_bridge_msgs/GetLanguage.h>
 
+#include <naoqi_bridge_msgs/SetVolume.h>
+
+#include <naoqi_bridge_msgs/GetVolume.h>
+
 #include <std_srvs/Empty.h>
 
 #include <qi/applicationsession.hpp>
@@ -45,6 +49,10 @@ const naoqi_bridge_msgs::RobotInfo& getRobotInfo( const qi::SessionPtr& session 
 const bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetLanguageRequest req );
 
 const std::string& getLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::GetLanguageRequest req );
+
+const bool& setVolume( const qi::SessionPtr& session, naoqi_bridge_msgs::SetVolumeRequest req );
+
+const int& getVolume( const qi::SessionPtr& session, naoqi_bridge_msgs::GetVolumeRequest req );
 
 } // driver
 } // helpers
