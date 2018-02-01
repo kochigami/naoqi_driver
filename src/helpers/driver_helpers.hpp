@@ -25,8 +25,6 @@
 
 #include <naoqi_bridge_msgs/SetString.h>
 
-#include <naoqi_bridge_msgs/GetString.h>
-
 #include <qi/applicationsession.hpp>
 
 namespace naoqi
@@ -42,7 +40,7 @@ const naoqi_bridge_msgs::RobotInfo& getRobotInfo( const qi::SessionPtr& session 
 
 const bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req );
 
-const std::string& getLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::GetStringRequest req );
+const std::string& getLanguage( const qi::SessionPtr& session );
 
 } // driver
 } // helpers
