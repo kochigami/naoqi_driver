@@ -27,8 +27,6 @@
 
 #include <naoqi_bridge_msgs/GetString.h>
 
-#include <std_srvs/Empty.h>
-
 #include <qi/applicationsession.hpp>
 
 namespace naoqi
