@@ -223,13 +223,17 @@ const bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetSt
   static std::string lang;
   std::cout << "Receiving service call of getting speech language" << std::endl;
   qi::AnyObject p_text_to_speech = session->service("ALTextToSpeech");
+  std::cout << "ok1" << std::endl;
   lang = p_text_to_speech.call<std::string>("getLanguage");
+  std::cout << "ok2"<< lang << std::endl;
   return lang;
 }
 
   const std::string& getLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::GetStringRequest req)
 {
+  std::cout << "ok3"<< std::endl;
   const std::string language = getLanguageLocal(session);
+  std::cout << "ok4"<< language << std::endl;
   return language;
 }
 
