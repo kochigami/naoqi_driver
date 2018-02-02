@@ -36,7 +36,7 @@ namespace service
 
   bool GetVolumeService::callback( nao_interaction_msgs::GetAudioMasterVolumeRequest& req, nao_interaction_msgs::GetAudioMasterVolumeResponse& resp )
   {
-    resp.master_volume.data = helpers::driver::getVolume(session_, req);
+    resp.master_volume.data = helpers::driver::getVolume(session_);
     return true;
   }
 

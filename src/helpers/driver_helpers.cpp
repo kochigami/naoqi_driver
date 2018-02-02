@@ -196,36 +196,31 @@ const naoqi_bridge_msgs::RobotInfo& getRobotInfo( const qi::SessionPtr& session 
 
 /** Function that sets volume for robot
  */
-static std_srvs::Empty& setVolumeLocal( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req)
+void setVolumeLocal( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req )
 {
-  static qi::Url robot_url;
-
-  robot_url = session->url();
-
   std::cout << "Receiving service call of setting volume" << std::endl;
   qi::AnyObject p_audio_device = session->service("ALAudioDevice");
   p_audio_device.call<void>("setOutputVolume", req.master_volume.data);
 }
 
-const bool& setVolume( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req)
+const bool& setVolume( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req )
 {
+  static bool success;
   try{
     setVolumeLocal(session, req);
-    return true;
+    success = true;
   }
   catch(const std::exception& e){
-    return false;
+    success = false;
   }
+  return success;
 }
 
 /** Function that gets volume for robot
  */
-static int& getVolumeLocal( const qi::SessionPtr& session, nao_interaction_msgs::GetAudioMasterVolumeRequest req)
+static int& getVolumeLocal( const qi::SessionPtr& session )
 {
-  static qi::Url robot_url;
   static int volume;
-
-  robot_url = session->url();
 
   std::cout << "Receiving service call of getting volume" << std::endl;
   qi::AnyObject p_audio_device = session->service("ALAudioDevice");
@@ -233,11 +228,11 @@ static int& getVolumeLocal( const qi::SessionPtr& session, nao_interaction_msgs:
   return volume;
 }
 
-const int& getVolume( const qi::SessionPtr& session, nao_interaction_msgs::GetAudioMasterVolumeRequest req)
+const int& getVolume( const qi::SessionPtr& session )
 {
   static int volume;
   try{
-    volume = getVolumeLocal(session, req);
+    volume = getVolumeLocal(session);
     return volume;
   }
   catch(const std::exception& e){
