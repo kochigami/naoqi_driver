@@ -203,17 +203,9 @@ void setVolumeLocal( const qi::SessionPtr& session, nao_interaction_msgs::SetAud
   p_audio_device.call<void>("setOutputVolume", req.master_volume.data);
 }
 
-const bool& setVolume( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req )
+void setVolume( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req )
 {
-  static bool success;
-  try{
-    setVolumeLocal(session, req);
-    success = true;
-  }
-  catch(const std::exception& e){
-    success = false;
-  }
-  return success;
+  setVolumeLocal(session, req);
 }
 
 /** Function that gets volume for robot
