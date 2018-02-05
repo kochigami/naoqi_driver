@@ -203,7 +203,7 @@ static void setLanguageLocal( const qi::SessionPtr& session, naoqi_bridge_msgs::
   p_text_to_speech.call<void>("setLanguage", req.data);
 }
 
-const bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req)
+bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req)
 {
   static bool success;
   try{
@@ -229,7 +229,7 @@ static std::string& getLanguageLocal( const qi::SessionPtr& session)
   return lang;
 }
 
-const std::string& getLanguage( const qi::SessionPtr& session )
+std::string& getLanguage( const qi::SessionPtr& session )
 {
   std::cout << "ok3 "<< std::endl;
   static std::string language = getLanguageLocal(session);

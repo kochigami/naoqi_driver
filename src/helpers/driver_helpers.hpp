@@ -38,9 +38,9 @@ const robot::Robot& getRobot( const qi::SessionPtr& session );
 
 const naoqi_bridge_msgs::RobotInfo& getRobotInfo( const qi::SessionPtr& session );
 
-const bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req );
+bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req );
 
-const std::string& getLanguage( const qi::SessionPtr& session );
+std::string& getLanguage( const qi::SessionPtr& session );
 
 } // driver
 } // helpers
