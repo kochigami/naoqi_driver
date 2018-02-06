@@ -196,18 +196,13 @@ const naoqi_bridge_msgs::RobotInfo& getRobotInfo( const qi::SessionPtr& session 
 
 /** Function that sets language for a robot
  */
-static void setLanguageLocal( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req)
-{
-  std::cout << "Receiving service call of setting speech language" << std::endl;
-  qi::AnyObject p_text_to_speech = session->service("ALTextToSpeech");
-  p_text_to_speech.call<void>("setLanguage", req.data);
-}
-
 bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req)
 {
   static bool success;
+  std::cout << "Receiving service call of setting speech language" << std::endl;
   try{
-    setLanguageLocal(session, req);
+    qi::AnyObject p_text_to_speech = session->service("ALTextToSpeech");
+    p_text_to_speech.call<void>("setLanguage", req.data);
     success = true;
   }
   catch(const std::exception& e){
