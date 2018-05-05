@@ -91,6 +91,21 @@
       "enabled"       : true,
       "frequency"     : 15
     }
+  },
+  "subscribers":
+  {
+    "speech":
+    {
+      "group_name"    : ""
+    },
+    "moveto":
+    {
+      "group_name"    : ""
+    },
+    "teleop":
+    {
+      "group_name"    : ""
+    }
   }
 }
 
