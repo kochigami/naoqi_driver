@@ -39,7 +39,8 @@ int main(int argc, char** argv)
     ("help,h", "print help message")
     ("roscore_ip,r", po::value<std::string>(), "set the ip of the roscore to use")
     ("network_interface,i", po::value<std::string>()->default_value("eth0"),  "set the network interface over which to connect")
-    ("namespace,n", po::value<std::string>()->default_value("naoqi_driver_node"), "set an explicit namespace in case ROS namespace variables cannot be used");
+    ("namespace,n", po::value<std::string>()->default_value("naoqi_driver_node"), "set an explicit namespace in case ROS namespace variables cannot be used")
+    ("bootconfig_name,b", po::value<std::string>()->default_value("boot_config.json"), "set an explicit file name for boot_config");
 
   po::variables_map vm;
   try
@@ -74,6 +75,7 @@ int main(int argc, char** argv)
 
   app.session()->registerService("ROS-Driver", bs);
 
+  std::string boot_config_file_name = vm["bootconfig_name"].as<std::string>();
   // set ros paramters directly upfront if available
   if ( vm.count("roscore_ip") )
   {
@@ -82,13 +84,13 @@ int main(int argc, char** argv)
 
     std::cout << BOLDYELLOW << "using ip address: "
               << BOLDCYAN << roscore_ip << " @ " << network_interface << RESETCOLOR << std::endl;
-    bs->init();
+    bs->init( boot_config_file_name );
     bs->setMasterURINet( "http://"+roscore_ip+":11311", network_interface);
   }
   else
   {
     std::cout << BOLDRED << "No ip address given. Run qicli call to set the master uri" << RESETCOLOR << std::endl;
-    bs->init();
+    bs->init( boot_config_file_name );
   }
 
   std::cout << BOLDYELLOW << "naoqi_driver initialized" << RESETCOLOR << std::endl;

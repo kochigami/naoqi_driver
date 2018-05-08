@@ -147,19 +147,19 @@ Driver::~Driver()
   }
 }
 
-void Driver::init()
+void Driver::init(const std::string& boot_config_file_name)
 {
   ros::Time::init(); // can call this many times
-  loadBootConfig();
+  loadBootConfig(boot_config_file_name);
   registerDefaultConverter();
   registerDefaultSubscriber();
   registerDefaultServices();
   startRosLoop();
 }
 
-void Driver::loadBootConfig()
+void Driver::loadBootConfig(const std::string& boot_config_file_name)
 {
-  const std::string& file_path = helpers::filesystem::getBootConfigFile();
+  const std::string& file_path = helpers::filesystem::getBootConfigFile(boot_config_file_name);
   std::cout << "load boot config from " << file_path << std::endl;
   if (!file_path.empty())
   {

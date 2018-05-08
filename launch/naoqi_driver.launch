@@ -5,7 +5,8 @@
   <arg name="roscore_ip"        default="127.0.0.1" />
   <arg name="network_interface" default="eth0" />
   <arg name="namespace"         default="naoqi_driver" />
+  <arg name="boot_config_file_name"         default="boot_config.json" />
 
-  <node pkg="naoqi_driver" type="naoqi_driver_node" name="$(arg namespace)" required="true" args="--qi-url=tcp://$(arg nao_ip):$(arg nao_port) --roscore_ip=$(arg roscore_ip) --network_interface=$(arg network_interface) --namespace=$(arg namespace)" output="screen" />
+  <node pkg="naoqi_driver" type="naoqi_driver_node" name="$(arg namespace)" required="true" args="--qi-url=tcp://$(arg nao_ip):$(arg nao_port) --roscore_ip=$(arg roscore_ip) --network_interface=$(arg network_interface) --namespace=$(arg namespace) --bootconfig_name=$(arg boot_config_file_name)" output="screen" />
 
 </launch>

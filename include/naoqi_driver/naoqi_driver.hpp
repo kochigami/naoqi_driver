@@ -77,7 +77,7 @@ public:
   */
   ~Driver();
 
-  void init();
+  void init(const std::string& boot_config_file_name);
 
   void startRosLoop();
   void stopRosLoop();
@@ -244,12 +244,10 @@ private:
   const size_t freq_;
   boost::thread publisherThread_;
   //ros::Rate r_;
-
   boost::shared_ptr<recorder::GlobalRecorder> recorder_;
-
   /* boot config */
   boost::property_tree::ptree boot_config_;
-  void loadBootConfig();
+  void loadBootConfig(const std::string& boot_config_file_name);
 
   void registerDefaultConverter();
   void registerDefaultSubscriber();
