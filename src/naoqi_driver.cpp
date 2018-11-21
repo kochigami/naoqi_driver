@@ -71,6 +71,8 @@
 #include "services/robot_config.hpp"
 #include "services/set_language.hpp"
 #include "services/get_language.hpp"
+#include "services/fade_leds.hpp"
+#include "services/reset_leds.hpp"
 
 /*
  * RECORDERS
@@ -906,9 +908,11 @@ void Driver::registerService( service::Service srv )
 
 void Driver::registerDefaultServices()
 {
-  registerService( boost::make_shared<service::RobotConfigService>("get_robot_config", "/naoqi_driver/get_robot_config", sessionPtr_) );
-  registerService( boost::make_shared<service::SetLanguageService>("set_language", "/naoqi_driver/set_language", sessionPtr_) );
-  registerService( boost::make_shared<service::GetLanguageService>("get_language", "/naoqi_driver/get_language", sessionPtr_) );
+  registerService( boost::make_shared<service::RobotConfigService>("robot config service", "/naoqi_driver/get_robot_config", sessionPtr_) );
+  registerService( boost::make_shared<service::SetLanguageService>("set language service", "/naoqi_driver/set_language", sessionPtr_) );
+  registerService( boost::make_shared<service::GetLanguageService>("get language service", "/naoqi_driver/get_language", sessionPtr_) );
+  registerService( boost::make_shared<service::FadeLedsService>("fade leds service", "/naoqi_driver/fade_leds", sessionPtr_) );
+  registerService( boost::make_shared<service::ResetLedsService>("reset leds service", "/naoqi_driver/reset_leds", sessionPtr_) );
 }
 
 std::vector<std::string> Driver::getAvailableConverters()
