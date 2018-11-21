@@ -74,6 +74,8 @@
 #include "services/fade_leds.hpp"
 #include "services/reset_leds.hpp"
 #include "services/play_audio_file.hpp"
+#include "services/set_volume.hpp"
+#include "services/get_volume.hpp"
 
 /*
  * RECORDERS
@@ -915,6 +917,8 @@ void Driver::registerDefaultServices()
   registerService( boost::make_shared<service::FadeLedsService>("fade leds service", "/naoqi_driver/fade_leds", sessionPtr_) );
   registerService( boost::make_shared<service::ResetLedsService>("reset leds service", "/naoqi_driver/reset_leds", sessionPtr_) );
   registerService( boost::make_shared<service::PlayAudioFileService>("play audio file", "/naoqi_driver/play_audio_file", sessionPtr_) );
+  registerService( boost::make_shared<service::SetVolumeService>("set volume service", "/naoqi_driver/set_master_volume", sessionPtr_) );
+  registerService( boost::make_shared<service::GetVolumeService>("get volume service", "/naoqi_driver/get_master_volume", sessionPtr_) );
 }
 
 std::vector<std::string> Driver::getAvailableConverters()

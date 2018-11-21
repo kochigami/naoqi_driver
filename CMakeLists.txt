@@ -51,6 +51,8 @@ set(
   src/services/fade_leds.cpp
   src/services/reset_leds.cpp
   src/services/play_audio_file.cpp
+  src/services/set_volume.cpp
+  src/services/get_volume.cpp
   )
 
 set(

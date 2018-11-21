@@ -31,6 +31,12 @@
 
 #include <nao_interaction_msgs/AudioPlayback.h>
 
+#include <nao_interaction_msgs/SetAudioMasterVolume.h>
+
+#include <nao_interaction_msgs/GetAudioMasterVolume.h>
+
+#include <std_srvs/Empty.h>
+
 #include <qi/applicationsession.hpp>
 
 
@@ -54,6 +60,10 @@ std_msgs::Empty& fadeLeds( const qi::SessionPtr& session, naoqi_bridge_msgs::Fad
 std_msgs::Empty& resetLeds( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req );
 
 std_msgs::Empty& playAudioFile( const qi::SessionPtr& session, nao_interaction_msgs::AudioPlaybackRequest req);
+
+const bool& setVolume( const qi::SessionPtr& session, nao_interaction_msgs::SetAudioMasterVolumeRequest req );
+
+const int& getVolume( const qi::SessionPtr& session );
 
 } // driver
 } // helpers
