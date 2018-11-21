@@ -50,6 +50,7 @@ set(
   src/services/get_language.cpp
   src/services/fade_leds.cpp
   src/services/reset_leds.cpp
+  src/services/play_audio_file.cpp
   )
 
 set(

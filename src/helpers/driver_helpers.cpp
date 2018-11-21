@@ -240,6 +240,20 @@ std_msgs::Empty& resetLeds( const qi::SessionPtr& session, naoqi_bridge_msgs::Se
   qi::AnyObject p_leds = session->service("ALLeds");
   p_leds.call<void>("reset", req.data);
 }
+  
+/** Function that plays audio file
+ */
+std_msgs::Empty& playAudioFile( const qi::SessionPtr& session, nao_interaction_msgs::AudioPlaybackRequest req)
+{
+  std::cout << "Receiving service call of playing audio file" << std::endl;
+  try{
+    qi::AnyObject p_audio_player = session->service("ALAudioPlayer");
+    p_audio_player.call<void>("playFile", "/home/nao/" + req.file_path.data);
+  }
+  catch(const std::exception& e){
+    std::cout << "Error in executing service of playing audio file" << std::endl;
+  }
+}
 
 } // driver
 } // helpers

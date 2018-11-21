@@ -29,7 +29,10 @@
 
 #include <naoqi_bridge_msgs/FadeLeds.h>
 
+#include <nao_interaction_msgs/AudioPlayback.h>
+
 #include <qi/applicationsession.hpp>
+
 
 namespace naoqi
 {
@@ -49,6 +52,8 @@ std::string& getLanguage( const qi::SessionPtr& session );
 std_msgs::Empty& fadeLeds( const qi::SessionPtr& session, naoqi_bridge_msgs::FadeLedsRequest req );
 
 std_msgs::Empty& resetLeds( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRequest req );
+
+std_msgs::Empty& playAudioFile( const qi::SessionPtr& session, nao_interaction_msgs::AudioPlaybackRequest req);
 
 } // driver
 } // helpers
