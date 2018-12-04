@@ -86,10 +86,6 @@
     {
       "enabled"       : true
     },
-    "chest_button":
-    {
-      "enabled"       : true
-    },
     "odom":
     {
       "enabled"       : true,
@@ -100,15 +96,15 @@
   {
     "speech":
     {
-      "group_name"    : ""
+      "group_name"    : "robot1"
     },
     "moveto":
     {
-      "group_name"    : ""
+      "group_name"    : "robot1"
     },
     "teleop":
     {
-      "group_name"    : ""
+      "group_name"    : "robot1"
     }
   }
 }

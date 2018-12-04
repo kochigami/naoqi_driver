@@ -94,8 +94,7 @@ inline void getFilesSize(const boost::filesystem::path& root, long& file_size)
 }
 
 /** Boot config loader */
-static const std::string boot_config_file_name = "boot_config.json";
-inline std::string& getBootConfigFile()
+inline std::string& getBootConfigFile( std::string boot_config_file_name )
 {
 #ifdef CATKIN_BUILD
   static std::string path = ros::package::getPath("naoqi_driver")+"/share/"+boot_config_file_name;
