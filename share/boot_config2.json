@@ -106,6 +106,20 @@
     {
       "group_name"    : "robot2"
     }
+  },
+  "services":
+  {
+    "get_language":
+    {
+      "group_name"    : "robot1"
+    },
+    "robot_config":
+    {
+      "group_name"    : "robot1"
+    },
+    "set_language":
+    {
+      "group_name"    : "robot1"
+    }
   }
 }
-
