@@ -120,6 +120,26 @@
     "set_language":
     {
       "group_name"    : "robot1"
+    },
+    "fade_leds":
+    {
+      "group_name"    : "robot1"
+    },
+    "get_volume":
+    {
+      "group_name"    : "robot1"
+    },
+    "play_audio_file":
+    {
+      "group_name"    : "robot1"
+    },
+    "reset_leds":
+    {
+      "group_name"    : "robot1"
+    },
+    "set_volume":
+    {
+      "group_name"    : "robot1"
     }
   }
 }

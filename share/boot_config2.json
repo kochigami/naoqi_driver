@@ -111,15 +111,35 @@
   {
     "get_language":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
     },
     "robot_config":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
     },
     "set_language":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
+    },
+    "fade_leds":
+    {
+      "group_name"    : "robot2"
+    },
+    "get_volume":
+    {
+      "group_name"    : "robot2"
+    },
+    "play_audio_file":
+    {
+      "group_name"    : "robot2"
+    },
+    "reset_leds":
+    {
+      "group_name"    : "robot2"
+    },
+    "set_volume":
+    {
+      "group_name"    : "robot2"
     }
   }
 }
