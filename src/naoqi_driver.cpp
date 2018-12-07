@@ -929,9 +929,28 @@ void Driver::registerService( service::Service srv )
 
 void Driver::registerDefaultServices()
 {
-  registerService( boost::make_shared<service::RobotConfigService>("robot config service", "/naoqi_driver/get_robot_config", sessionPtr_) );
-  registerService( boost::make_shared<service::SetLanguageService>("set language service", "/naoqi_driver/set_language", sessionPtr_) );
-  registerService( boost::make_shared<service::GetLanguageService>("get language service", "/naoqi_driver/get_language", sessionPtr_) );
+  std::string get_language_group_name       = boot_config_.get( "services.get_language.group_name", "");
+  std::string robot_config_group_name       = boot_config_.get( "services.robot_config.group_name", "");
+  std::string set_language_group_name       = boot_config_.get( "services.set_language.group_name", "");
+
+  if (!services_.empty())
+    return;
+  if (get_language_group_name[0] == '/'){
+    get_language_group_name.erase(get_language_group_name.begin());
+  }
+  std::string get_language_service_name = "/" + get_language_group_name + "/naoqi_driver/get_language";
+  if (robot_config_group_name[0] == '/'){
+    robot_config_group_name.erase(robot_config_group_name.begin());
+  }
+  std::string robot_config_service_name = "/" + robot_config_group_name + "/naoqi_driver/get_robot_config";
+  if (set_language_group_name[0] == '/'){
+    set_language_group_name.erase(set_language_group_name.begin());
+  }
+  std::string set_language_service_name = "/" + set_language_group_name + "/naoqi_driver/set_language";
+
+  registerService( boost::make_shared<service::RobotConfigService>("get_robot_config", robot_config_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::SetLanguageService>("set_language", set_language_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::GetLanguageService>("get_language", get_language_service_name, sessionPtr_) );
   registerService( boost::make_shared<service::FadeLedsService>("fade leds service", "/naoqi_driver/fade_leds", sessionPtr_) );
   registerService( boost::make_shared<service::ResetLedsService>("reset leds service", "/naoqi_driver/reset_leds", sessionPtr_) );
   registerService( boost::make_shared<service::PlayAudioFileService>("play audio file", "/naoqi_driver/play_audio_file", sessionPtr_) );
