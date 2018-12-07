@@ -148,19 +148,19 @@ Driver::~Driver()
   }
 }
 
-void Driver::init()
+void Driver::init(const std::string& boot_config_file_name)
 {
   ros::Time::init(); // can call this many times
-  loadBootConfig();
+  loadBootConfig(boot_config_file_name);
   registerDefaultConverter();
   registerDefaultSubscriber();
   registerDefaultServices();
   startRosLoop();
 }
 
-void Driver::loadBootConfig()
+void Driver::loadBootConfig(const std::string& boot_config_file_name)
 {
-  const std::string& file_path = helpers::filesystem::getBootConfigFile();
+  const std::string& file_path = helpers::filesystem::getBootConfigFile(boot_config_file_name);
   std::cout << "load boot config from " << file_path << std::endl;
   if (!file_path.empty())
   {
@@ -876,11 +876,29 @@ void Driver::registerSubscriber( subscriber::Subscriber sub )
 
 void Driver::registerDefaultSubscriber()
 {
+  std::string speech_group_name       = boot_config_.get( "subscribers.speech.group_name", "");
+  std::string moveto_group_name       = boot_config_.get( "subscribers.moveto.group_name", "");
+  std::string teleop_group_name       = boot_config_.get( "subscribers.teleop.group_name", "");
+
   if (!subscribers_.empty())
     return;
-  registerSubscriber( boost::make_shared<naoqi::subscriber::TeleopSubscriber>("teleop", "/cmd_vel", "/joint_angles", sessionPtr_) );
-  registerSubscriber( boost::make_shared<naoqi::subscriber::MovetoSubscriber>("moveto", "/move_base_simple/goal", sessionPtr_, tf2_buffer_) );
-  registerSubscriber( boost::make_shared<naoqi::subscriber::SpeechSubscriber>("speech", "/speech", sessionPtr_) );
+  if (speech_group_name[0] == '/'){
+    speech_group_name.erase(speech_group_name.begin());
+  }
+  std::string speech_topic_name = "/" + speech_group_name + "/speech";
+  if (moveto_group_name[0] == '/'){
+    moveto_group_name.erase(moveto_group_name.begin());
+  }
+  std::string moveto_topic_name = "/" + moveto_group_name + "/move_base_simple/goal";
+  if (teleop_group_name[0] == '/'){
+    teleop_group_name.erase(teleop_group_name.begin());
+  }
+  std::string teleop_topic_name_cmd_vel = "/" + teleop_group_name + "/cmd_vel";
+  std::string teleop_topic_name_joint_angles = "/" + teleop_group_name + "/joint_angles";
+
+  registerSubscriber( boost::make_shared<naoqi::subscriber::TeleopSubscriber>("teleop", teleop_topic_name_cmd_vel, teleop_topic_name_joint_angles, sessionPtr_) );
+  registerSubscriber( boost::make_shared<naoqi::subscriber::MovetoSubscriber>("moveto", moveto_topic_name, sessionPtr_, tf2_buffer_) );
+  registerSubscriber( boost::make_shared<naoqi::subscriber::SpeechSubscriber>("speech", speech_topic_name, sessionPtr_) );
 }
 
 void Driver::registerService( service::Service srv )

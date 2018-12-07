@@ -96,15 +96,15 @@
   {
     "speech":
     {
-      "group_name"    : ""
+      "group_name"    : "robot2"
     },
     "moveto":
     {
-      "group_name"    : ""
+      "group_name"    : "robot2"
     },
     "teleop":
     {
-      "group_name"    : ""
+      "group_name"    : "robot2"
     }
   }
 }
