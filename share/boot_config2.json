@@ -111,15 +111,15 @@
   {
     "get_language":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
     },
     "robot_config":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
     },
     "set_language":
     {
-      "group_name"    : "robot1"
+      "group_name"    : "robot2"
     }
   }
 }
