@@ -929,14 +929,58 @@ void Driver::registerService( service::Service srv )
 
 void Driver::registerDefaultServices()
 {
-  registerService( boost::make_shared<service::RobotConfigService>("robot config service", "/naoqi_driver/get_robot_config", sessionPtr_) );
-  registerService( boost::make_shared<service::SetLanguageService>("set language service", "/naoqi_driver/set_language", sessionPtr_) );
-  registerService( boost::make_shared<service::GetLanguageService>("get language service", "/naoqi_driver/get_language", sessionPtr_) );
-  registerService( boost::make_shared<service::FadeLedsService>("fade leds service", "/naoqi_driver/fade_leds", sessionPtr_) );
-  registerService( boost::make_shared<service::ResetLedsService>("reset leds service", "/naoqi_driver/reset_leds", sessionPtr_) );
-  registerService( boost::make_shared<service::PlayAudioFileService>("play audio file", "/naoqi_driver/play_audio_file", sessionPtr_) );
-  registerService( boost::make_shared<service::SetVolumeService>("set volume service", "/naoqi_driver/set_master_volume", sessionPtr_) );
-  registerService( boost::make_shared<service::GetVolumeService>("get volume service", "/naoqi_driver/get_master_volume", sessionPtr_) );
+  std::string get_language_group_name       = boot_config_.get( "services.get_language.group_name", "");
+  std::string robot_config_group_name       = boot_config_.get( "services.robot_config.group_name", "");
+  std::string set_language_group_name       = boot_config_.get( "services.set_language.group_name", "");
+  std::string fade_leds_group_name       = boot_config_.get( "services.fade_leds.group_name", "");
+  std::string get_volume_group_name       = boot_config_.get( "services.get_volume.group_name", "");
+  std::string play_audio_file_group_name       = boot_config_.get( "services.play_audio_file.group_name", "");
+  std::string reset_leds_group_name       = boot_config_.get( "services.reset_leds.group_name", "");
+  std::string set_volume_group_name       = boot_config_.get( "services.set_volume.group_name", "");
+
+  if (!services_.empty())
+    return;
+  if (get_language_group_name[0] == '/'){
+    get_language_group_name.erase(get_language_group_name.begin());
+  }
+  std::string get_language_service_name = "/" + get_language_group_name + "/naoqi_driver/get_language";
+  if (robot_config_group_name[0] == '/'){
+    robot_config_group_name.erase(robot_config_group_name.begin());
+  }
+  std::string robot_config_service_name = "/" + robot_config_group_name + "/naoqi_driver/get_robot_config";
+  if (set_language_group_name[0] == '/'){
+    set_language_group_name.erase(set_language_group_name.begin());
+  }
+  std::string set_language_service_name = "/" + set_language_group_name + "/naoqi_driver/set_language";
+  if (fade_leds_group_name[0] == '/'){
+    fade_leds_group_name.erase(fade_leds_group_name.begin());
+  }
+  std::string fade_leds_service_name = "/" + fade_leds_group_name + "/naoqi_driver/fade_leds";
+  if (get_volume_group_name[0] == '/'){
+    get_volume_group_name.erase(get_volume_group_name.begin());
+  }
+  std::string get_volume_service_name = "/" + get_volume_group_name + "/naoqi_driver/get_volume";
+  if (play_audio_file_group_name[0] == '/'){
+    play_audio_file_group_name.erase(play_audio_file_group_name.begin());
+  }
+  std::string play_audio_file_service_name = "/" + play_audio_file_group_name + "/naoqi_driver/play_audio_file";
+  if (reset_leds_group_name[0] == '/'){
+    reset_leds_group_name.erase(reset_leds_group_name.begin());
+  }
+  std::string reset_leds_service_name = "/" + reset_leds_group_name + "/naoqi_driver/reset_leds";
+  if (set_volume_group_name[0] == '/'){
+    set_volume_group_name.erase(set_volume_group_name.begin());
+  }
+  std::string set_volume_service_name = "/" + set_volume_group_name + "/naoqi_driver/set_volume";
+  
+  registerService( boost::make_shared<service::RobotConfigService>("get_robot_config", robot_config_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::SetLanguageService>("set_language", set_language_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::GetLanguageService>("get_language", get_language_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::FadeLedsService>("fade leds service", fade_leds_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::ResetLedsService>("reset leds service", reset_leds_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::PlayAudioFileService>("play audio file", play_audio_file_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::SetVolumeService>("set volume service", set_volume_service_name, sessionPtr_) );
+  registerService( boost::make_shared<service::GetVolumeService>("get volume service", get_volume_service_name, sessionPtr_) );
 }
 
 std::vector<std::string> Driver::getAvailableConverters()
