@@ -87,6 +87,8 @@ void JointStateConverter::callAll( const std::vector<message_actions::MessageAct
 {
   // get joint state values
   std::vector<double> al_joint_angles = p_motion_.call<std::vector<double> >("getAngles", "Body", true );
+  // get joint state values without a joint sensor
+  std::vector<double> al_joint_angles_reference_data = p_motion_.call<std::vector<double> >("getAngles", "Body", false );
   const ros::Time& stamp = ros::Time::now();
 
   /**
@@ -97,6 +99,11 @@ void JointStateConverter::callAll( const std::vector<message_actions::MessageAct
   // STUPID CONVERTION FROM FLOAT TO DOUBLE ARRAY --> OPTIMIZE THAT!
   msg_joint_states_.position = std::vector<double>( al_joint_angles.begin(), al_joint_angles.end() );
 
+  msg_joint_states_.effort.clear();
+  for(int i = 0 ; i < al_joint_angles.size() ; i++){    
+    msg_joint_states_.effort.push_back(al_joint_angles.at(i) - al_joint_angles_reference_data.at(i));
+  }
+  
   /**
    * ROBOT STATE PUBLISHER
    */
