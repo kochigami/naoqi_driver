@@ -120,10 +120,9 @@ DiagnosticsConverter::DiagnosticsConverter( const std::string& name, float frequ
   battery_status_keys_ = std::vector<std::string>(battery_status_keys, battery_status_keys+2);
 
   // Get the CPU keys
-  // TODO check that: it is apparently always -1 ...
-  //all_keys_.push_back(std::string("HeadProcessorIsHot"));
-
-  // TODO get ID from Device/DeviceList/ChestBoard/BodyId
+  // ALMemory HeadProcessorIsHot is only raised when error is detected.
+  // That is why ALMemory Device/SubDeviceList/Head/Temperature/Sensor/Value is used.
+  all_keys_.push_back(std::string("Device/SubDeviceList/Head/Temperature/Sensor/Value"));
 }
 
 void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAction>& actions )
@@ -286,16 +285,31 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
     msg.status.push_back(status);
   }
 
-  // TODO: CPU information should be obtained from system files like done in Python
-  // We can still get the temperature
+  // Process CPU information
   {
     diagnostic_updater::DiagnosticStatusWrapper status;
-    status.name = std::string("naoqi_driver_computer:CPU");
-    status.level = diagnostic_msgs::DiagnosticStatus::OK;
-    //status.add("Temperature", static_cast<float>(values[val++]));
-    // setting to -1 until we find the right key
-    status.add("Temperature", static_cast<float>(-1));
-
+    status.name = std::string("naoqi_driver_computer:Computer");
+    status.hardware_id = "computer";
+    float temperature = static_cast<float>(values[val++]);
+    status.add("Temperature", temperature);
+    
+    // Define the level
+    if (temperature < temperature_warn_level_)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::OK;
+      status.message = "OK";
+    }
+    else if (temperature < temperature_error_level_)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+      status.message = "Hot";
+    }
+    else
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+      status.message = "Too hot";
+    }
+    
     msg.status.push_back(status);
   }
 
