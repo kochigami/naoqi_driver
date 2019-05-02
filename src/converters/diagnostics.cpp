@@ -123,6 +123,11 @@ DiagnosticsConverter::DiagnosticsConverter( const std::string& name, float frequ
   // ALMemory HeadProcessorIsHot is only raised when error is detected.
   // That is why ALMemory Device/SubDeviceList/Head/Temperature/Sensor/Value is used.
   all_keys_.push_back(std::string("Device/SubDeviceList/Head/Temperature/Sensor/Value"));
+
+  // Get network connection status
+  this->p_connection_manager_ = session->service("ALConnectionManager");
+  network_connection_status_ = this->p_connection_manager_.call<std::string>("state");
+
 }
 
 void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAction>& actions )
@@ -288,7 +293,7 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
   // Process CPU information
   {
     diagnostic_updater::DiagnosticStatusWrapper status;
-    status.name = std::string("naoqi_driver_computer:Computer");
+    status.name = std::string("naoqi_driver_computer:CPU");
     status.hardware_id = "computer";
     float temperature = static_cast<float>(values[val++]);
     status.add("Temperature", temperature);
@@ -314,7 +319,33 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
   }
 
   // TODO: wifi and ethernet statuses should be obtained from DBUS
+  {
+    diagnostic_updater::DiagnosticStatusWrapper status;
+    status.name = std::string("naoqi_driver_network:Network");
+    status.hardware_id = "network";
+    status.add("Network", network_connection_status_);
+    
+    // Define the level
+    if (network_connection_status_.compare("online") == 0)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::OK;
+      status.message = "Ok";
+    }
+    else if (network_connection_status_.compare("ready") == 0)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+      status.message = "Warn";
+    }
+    else
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+      status.message = "Error";
+    }
+    
+    msg.status.push_back(status);
 
+  }
+  
   for_each( message_actions::MessageAction action, actions )
   {
     callbacks_[action]( msg);
