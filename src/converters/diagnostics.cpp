@@ -128,6 +128,20 @@ DiagnosticsConverter::DiagnosticsConverter( const std::string& name, float frequ
   this->p_connection_manager_ = session->service("ALConnectionManager");
   network_connection_status_ = this->p_connection_manager_.call<std::string>("state");
 
+  // Get 2D camera status
+  all_keys_.push_back(std::string("Diagnosis/Passive/CameraTop/Error"));
+  all_keys_.push_back(std::string("Diagnosis/Passive/CameraBottom/Error"));
+
+  // Get depth sensor status
+  //if (robot_ == robot::PEPPER){
+  //all_keys_.push_back(std::string("Diagnosis/Passive/CameraDepth/Error"));
+  //}
+
+  // Get wheel status
+  //if (robot_ == robot::PEPPER){
+  //all_keys_.push_back(std::string("Diagnosis/Passive/CameraDepth/Error"));
+  //}
+
 }
 
 void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAction>& actions )
@@ -345,7 +359,41 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
     msg.status.push_back(status);
 
   }
-  
+
+  // Process 2D camera information
+  {
+    for(int i = 0; i < 2; ++i){
+      diagnostic_updater::DiagnosticStatusWrapper status;
+      int camera_status = static_cast<int>(values[val++]);
+      if (i==0){
+	status.name = std::string("naoqi_driver_camera:CameraTop");
+	status.hardware_id = "cameraTop";
+      }else{
+	status.name = std::string("naoqi_driver_camera:CameraBottom");
+	status.hardware_id = "cameraBottom";
+      }
+      status.add("Camera", camera_status);
+
+      // Define the level
+      if (camera_status == 0)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::OK;
+	  status.message = "Ok";
+	}
+      else if (camera_status == 1)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+	  status.message = "Warn";
+	}
+      else
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+	  status.message = "Error";
+	}
+      msg.status.push_back(status);
+    }
+  }
+
   for_each( message_actions::MessageAction action, actions )
   {
     callbacks_[action]( msg);
