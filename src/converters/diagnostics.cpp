@@ -120,11 +120,24 @@ DiagnosticsConverter::DiagnosticsConverter( const std::string& name, float frequ
   battery_status_keys_ = std::vector<std::string>(battery_status_keys, battery_status_keys+2);
 
   // Get the CPU keys
-  // TODO check that: it is apparently always -1 ...
-  //all_keys_.push_back(std::string("HeadProcessorIsHot"));
+  // ALMemory HeadProcessorIsHot is only raised when error is detected.
+  // That is why ALMemory Device/SubDeviceList/Head/Temperature/Sensor/Value is used.
+  all_keys_.push_back(std::string("Device/SubDeviceList/Head/Temperature/Sensor/Value"));
 
-  // TODO get ID from Device/DeviceList/ChestBoard/BodyId
+  // Get network connection status
+  this->p_connection_manager_ = session->service("ALConnectionManager");
+  network_connection_status_ = this->p_connection_manager_.call<std::string>("state");
+
+  // Get 2D camera status
+  all_keys_.push_back(std::string("Diagnosis/Passive/CameraTop/Error"));
+  all_keys_.push_back(std::string("Diagnosis/Passive/CameraBottom/Error"));
+
+  // Get depth sensor status
+  if (robot_ == robot::PEPPER){
+    all_keys_.push_back(std::string("Diagnosis/Passive/CameraDepth/Error"));
+  }
 }
+
 
 void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAction>& actions )
 {
@@ -286,20 +299,122 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
     msg.status.push_back(status);
   }
 
-  // TODO: CPU information should be obtained from system files like done in Python
-  // We can still get the temperature
+  // Process CPU information
   {
     diagnostic_updater::DiagnosticStatusWrapper status;
     status.name = std::string("naoqi_driver_computer:CPU");
-    status.level = diagnostic_msgs::DiagnosticStatus::OK;
-    //status.add("Temperature", static_cast<float>(values[val++]));
-    // setting to -1 until we find the right key
-    status.add("Temperature", static_cast<float>(-1));
-
+    status.hardware_id = "computer";
+    float temperature = static_cast<float>(values[val++]);
+    status.add("Temperature", temperature);
+    
+    // Define the level
+    if (temperature < temperature_warn_level_)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::OK;
+      status.message = "OK";
+    }
+    else if (temperature < temperature_error_level_)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+      status.message = "Hot";
+    }
+    else
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+      status.message = "Too hot";
+    }
+    
     msg.status.push_back(status);
   }
 
   // TODO: wifi and ethernet statuses should be obtained from DBUS
+  {
+    diagnostic_updater::DiagnosticStatusWrapper status;
+    status.name = std::string("naoqi_driver_network:Network");
+    status.hardware_id = "network";
+    status.add("Network", network_connection_status_);
+    
+    // Define the level
+    if (network_connection_status_.compare("online") == 0)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::OK;
+      status.message = "Ok";
+    }
+    else if (network_connection_status_.compare("ready") == 0)
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+      status.message = "Warn";
+    }
+    else
+    {
+      status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+      status.message = "Error";
+    }
+    
+    msg.status.push_back(status);
+
+  }
+
+  // Process 2D camera information
+  {
+    for(int i = 0; i < 2; ++i){
+      diagnostic_updater::DiagnosticStatusWrapper status;
+      int camera_status = static_cast<int>(values[val++]);
+      if (i==0){
+	status.name = std::string("naoqi_driver_camera:CameraTop");
+	status.hardware_id = "cameraTop";
+      }else{
+	status.name = std::string("naoqi_driver_camera:CameraBottom");
+	status.hardware_id = "cameraBottom";
+      }
+      status.add("Camera", camera_status);
+
+      // Define the level
+      if (camera_status == 0)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::OK;
+	  status.message = "Ok";
+	}
+      else if (camera_status == 1)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+	  status.message = "Warn";
+	}
+      else
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+	  status.message = "Error";
+	}
+      msg.status.push_back(status);
+    }
+  }
+
+  // Process depth sensor information
+  {
+    diagnostic_updater::DiagnosticStatusWrapper status;
+    int sensor_status = static_cast<int>(values[val++]);
+    status.name = std::string("naoqi_driver_camera:CameraDepth");
+    status.hardware_id = "cameraDepth";
+    status.add("Camera", sensor_status);
+
+    // Define the level
+    if (sensor_status == 0)
+      {
+	status.level = diagnostic_msgs::DiagnosticStatus::OK;
+	status.message = "Ok";
+      }
+    else if (sensor_status == 1)
+      {
+	status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+	status.message = "Warn";
+      }
+    else
+      {
+	status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+	status.message = "Error";
+      }
+    msg.status.push_back(status);
+  }
 
   for_each( message_actions::MessageAction action, actions )
   {
