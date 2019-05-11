@@ -391,29 +391,31 @@ void DiagnosticsConverter::callAll( const std::vector<message_actions::MessageAc
 
   // Process depth sensor information
   {
-    diagnostic_updater::DiagnosticStatusWrapper status;
-    int sensor_status = static_cast<int>(values[val++]);
-    status.name = std::string("naoqi_driver_camera:CameraDepth");
-    status.hardware_id = "cameraDepth";
-    status.add("Camera", sensor_status);
+    if (robot_ == robot::PEPPER){
+      diagnostic_updater::DiagnosticStatusWrapper status;
+      int sensor_status = static_cast<int>(values[val++]);
+      status.name = std::string("naoqi_driver_camera:CameraDepth");
+      status.hardware_id = "cameraDepth";
+      status.add("Camera", sensor_status);
 
-    // Define the level
-    if (sensor_status == 0)
-      {
-	status.level = diagnostic_msgs::DiagnosticStatus::OK;
-	status.message = "Ok";
-      }
-    else if (sensor_status == 1)
-      {
-	status.level = diagnostic_msgs::DiagnosticStatus::WARN;
-	status.message = "Warn";
-      }
-    else
-      {
-	status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
-	status.message = "Error";
-      }
-    msg.status.push_back(status);
+      // Define the level
+      if (sensor_status == 0)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::OK;
+	  status.message = "Ok";
+	}
+      else if (sensor_status == 1)
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::WARN;
+	  status.message = "Warn";
+	}
+      else
+	{
+	  status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+	  status.message = "Error";
+	}
+      msg.status.push_back(status);
+    }
   }
 
   for_each( message_actions::MessageAction action, actions )
