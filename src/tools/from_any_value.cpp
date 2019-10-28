@@ -16,6 +16,7 @@
 */
 
 #include "from_any_value.hpp"
+#include <iostream>
 
 namespace naoqi {
 
