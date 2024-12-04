@@ -23,7 +23,11 @@
 
 #include <naoqi_bridge_msgs/RobotInfo.h>
 
+#include <std_msgs/Empty.h>
+
 #include <naoqi_bridge_msgs/SetString.h>
+
+#include <nao_interaction_msgs/AudioPlayback.h>
 
 #include <qi/applicationsession.hpp>
 
@@ -44,6 +48,8 @@ bool& setLanguage( const qi::SessionPtr& session, naoqi_bridge_msgs::SetStringRe
 
 std::string& getLanguage( const qi::SessionPtr& session );
 
+std_msgs::Empty& playAudioFile( const qi::SessionPtr& session, nao_interaction_msgs::AudioPlaybackRequest req);
+  
 bool isDepthStereo(const qi::SessionPtr &session);
 
 bool isNaoqiVersionLesser(
